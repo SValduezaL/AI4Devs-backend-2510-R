@@ -10,9 +10,9 @@
 
 **Coverage**: Desconocido (sin tests)
 
-**📋 Análisis TDD completo**: Ver `ENGINEERING_PRACTICES.md` sección "Test-Driven Development (TDD)"
+**📋 Análisis TDD completo**: Ver `documentation/best_practices.md` sección "Test-Driven Development (TDD)"
 
-**Problema crítico identificado**: No se puede aplicar TDD correctamente porque los modelos de dominio están acoplados a Prisma. Ver `ENGINEERING_PRACTICES.md` sección DDD para solución (Repository Pattern).
+**Problema crítico identificado**: No se puede aplicar TDD correctamente porque los modelos de dominio están acoplados a Prisma. Ver `documentation/best_practices.md` sección DDD para solución (Repository Pattern).
 
 ## Configuración detectada
 
@@ -61,13 +61,13 @@ module.exports = {
 
 ### Unit Tests
 
-**Qué testear** (priorizado según `ENGINEERING_PRACTICES.md`):
+**Qué testear** (priorizado según `documentation/best_practices.md`):
 
 1. **Value Objects** (cuando se implementen):
 
     - Email, Phone, DateRange
     - Fáciles de testear, alto impacto
-    - **Referencia**: `ENGINEERING_PRACTICES.md` sección TDD - Ejemplo: Test de Value Object
+    - **Referencia**: `documentation/best_practices.md` sección TDD - Ejemplo: Test de Value Object
 
 2. **Validadores** (`backend/src/application/validator.ts`):
 
@@ -77,7 +77,7 @@ module.exports = {
 3. **Servicios** (`backend/src/application/services/*.ts`):
 
     - **⚠️ Problema actual**: Dependen de modelos con persistencia (difícil de mockear)
-    - **Solución**: Implementar Repository Pattern primero (ver `ENGINEERING_PRACTICES.md`)
+    - **Solución**: Implementar Repository Pattern primero (ver `documentation/best_practices.md`)
     - Con repositorios, se pueden mockear fácilmente
 
 4. Utilidades y helpers
@@ -111,7 +111,7 @@ describe("validateCandidateData", () => {
 });
 ```
 
-**Ejemplo con Repository Pattern** (recomendado en `ENGINEERING_PRACTICES.md`):
+**Ejemplo con Repository Pattern** (recomendado en `documentation/best_practices.md`):
 
 ```typescript
 // candidateService.test.ts
@@ -150,7 +150,7 @@ describe("CandidateService", () => {
 });
 ```
 
-**Referencia**: Ver `ENGINEERING_PRACTICES.md` sección TDD para más ejemplos
+**Referencia**: Ver `documentation/best_practices.md` sección TDD para más ejemplos
 
 **Dónde**: `backend/src/tests/unit/` o `backend/src/__tests__/`
 
@@ -244,7 +244,7 @@ describe("Candidate Management", () => {
 
 **⚠️ Problema actual**: Los modelos de dominio usan Prisma directamente, lo que hace difícil mockear sin base de datos.
 
-**✅ Solución recomendada** (ver `ENGINEERING_PRACTICES.md`):
+**✅ Solución recomendada** (ver `documentation/best_practices.md`):
 
 -   Implementar Repository Pattern
 -   Mockear interfaces de repositorios en lugar de Prisma
@@ -388,15 +388,15 @@ backend/src/tests/
 
 ## Quick wins para testing
 
-**📋 Ver `ENGINEERING_PRACTICES.md` sección TDD para estrategia completa**
+**📋 Ver `documentation/best_practices.md` sección TDD para estrategia completa**
 
-**Recomendación priorizada** (según `ENGINEERING_PRACTICES.md`):
+**Recomendación priorizada** (según `documentation/best_practices.md`):
 
 1. **Empezar con Value Objects** (cuando se implementen):
 
     - Son fáciles de testear y alto impacto
     - **Esfuerzo**: 1-2 horas
-    - **Referencia**: `ENGINEERING_PRACTICES.md` sección TDD
+    - **Referencia**: `documentation/best_practices.md` sección TDD
 
 2. **Tests de validación** (1-2 horas):
 
@@ -407,7 +407,7 @@ backend/src/tests/
 
     - **⚠️ CRÍTICO**: Sin esto, no se pueden testear servicios sin BD
     - Habilitará testing real de servicios
-    - **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD
+    - **Referencia**: `documentation/best_practices.md` sección DDD
 
 4. **Tests de servicios** (después de Repository Pattern):
 

@@ -145,7 +145,7 @@
 
 ### Deuda técnica
 
-**📋 Análisis completo disponible en `ENGINEERING_PRACTICES.md`**
+**📋 Análisis completo disponible en `documentation/best_practices.md`**
 
 1. **Acoplamiento Domain → Prisma** (CRÍTICO):
 
@@ -153,7 +153,7 @@
     - Viola **Dependency Inversion Principle (DIP)**
     - Viola **Single Responsibility Principle (SRP)**
     - **Impacto**: Difícil testear, cambiar ORM requiere modificar modelos
-    - **Solución recomendada**: Repository Pattern (ver `ENGINEERING_PRACTICES.md` sección DDD)
+    - **Solución recomendada**: Repository Pattern (ver `documentation/best_practices.md` sección DDD)
     - **Esfuerzo estimado**: 2-3 días
 
 2. **Sin separación de concerns en validación**:
@@ -166,7 +166,7 @@
         - Crear Value Objects para validación en dominio
         - Separar validadores por responsabilidad (FieldValidator, EducationValidator, etc.)
         - Usar Strategy Pattern para validación configurable
-    - **Referencia**: Ver `ENGINEERING_PRACTICES.md` sección SOLID y DRY
+    - **Referencia**: Ver `documentation/best_practices.md` sección SOLID y DRY
     - **Esfuerzo estimado**: 1-2 días
 
 3. **Manejo de errores inconsistente**:
@@ -213,7 +213,7 @@
 
 ## Lista de Quick wins (3-10)
 
-**📋 Recomendaciones priorizadas detalladas en `ENGINEERING_PRACTICES.md` sección "Resumen de Recomendaciones Prioritarias"**
+**📋 Recomendaciones priorizadas detalladas en `documentation/best_practices.md` sección "Resumen de Recomendaciones Prioritarias"**
 
 ### Prioridad Alta (hacer primero)
 
@@ -223,7 +223,7 @@
     - Habilitar testing sin BD
     - Cumplir DIP y SRP
     - **Esfuerzo**: 2-3 días
-    - **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD y SOLID
+    - **Referencia**: `documentation/best_practices.md` sección DDD y SOLID
 
 2. **Corregir inconsistencia en rutas**:
 
@@ -255,20 +255,20 @@
     - Email, Phone, DateRange
     - Validación encapsulada en dominio
     - **Esfuerzo**: 1 día
-    - **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD
+    - **Referencia**: `documentation/best_practices.md` sección DDD
 
 5. **Separar validadores por responsabilidad**:
 
     - FieldValidator, EducationValidator, etc.
     - Cumplir SRP
     - **Esfuerzo**: 1 día
-    - **Referencia**: `ENGINEERING_PRACTICES.md` sección SOLID
+    - **Referencia**: `documentation/best_practices.md` sección SOLID
 
 6. **Implementar tests unitarios básicos**:
 
     - Empezar con Value Objects y validadores
     - **Esfuerzo**: 2-3 días
-    - **Referencia**: `ENGINEERING_PRACTICES.md` sección TDD
+    - **Referencia**: `documentation/best_practices.md` sección TDD
 
 7. **Añadir GET all candidates con paginación**:
 
@@ -300,19 +300,19 @@
 
     -   Para creación de agregados complejos
     -   **Esfuerzo**: 1 día
-    -   **Referencia**: `ENGINEERING_PRACTICES.md` sección Patrones de Diseño
+    -   **Referencia**: `documentation/best_practices.md` sección Patrones de Diseño
 
 12. **Implementar Unit of Work Pattern**:
 
     -   Para transacciones complejas
     -   **Esfuerzo**: 2 días
-    -   **Referencia**: `ENGINEERING_PRACTICES.md` sección Patrones de Diseño
+    -   **Referencia**: `documentation/best_practices.md` sección Patrones de Diseño
 
 13. **Migrar a Domain Services**:
 
     -   Mover lógica de negocio compleja del Application Service
     -   **Esfuerzo**: 2-3 días
-    -   **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD
+    -   **Referencia**: `documentation/best_practices.md` sección DDD
 
 14. **Mejorar tipos TypeScript**:
 

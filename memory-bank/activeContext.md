@@ -10,7 +10,7 @@
 
 **📋 Documento de Buenas Prácticas creado**: 2026-01-07
 
--   **Archivo**: `ENGINEERING_PRACTICES.md`
+-   **Archivo**: `documentation/best_practices.md`
 -   **Contenido**: Análisis completo de violaciones SOLID, DDD, TDD, DRY y recomendaciones priorizadas
 -   **Uso**: Referencia oficial para decisiones arquitectónicas futuras
 
@@ -81,7 +81,7 @@
 
 ## Next steps sugeridos (backlog inicial)
 
-**📋 Ver `ENGINEERING_PRACTICES.md` sección "Resumen de Recomendaciones Prioritarias" para análisis detallado**
+**📋 Ver `documentation/best_practices.md` sección "Resumen de Recomendaciones Prioritarias" para análisis detallado**
 
 ### Prioridad Alta (Impacto inmediato) ⭐
 
@@ -91,7 +91,7 @@
     - Habilitar testing sin BD
     - Cumplir DIP y SRP
     - **Esfuerzo**: 2-3 días
-    - **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD y SOLID
+    - **Referencia**: `documentation/best_practices.md` sección DDD y SOLID
 
 2. **Corregir inconsistencia en rutas**:
 
@@ -119,20 +119,20 @@
     - Email, Phone, DateRange
     - Validación encapsulada en dominio
     - **Esfuerzo**: 1 día
-    - **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD
+    - **Referencia**: `documentation/best_practices.md` sección DDD
 
 6. **Separar validadores por responsabilidad**:
 
     - FieldValidator, EducationValidator, etc.
     - Cumplir SRP
     - **Esfuerzo**: 1 día
-    - **Referencia**: `ENGINEERING_PRACTICES.md` sección SOLID
+    - **Referencia**: `documentation/best_practices.md` sección SOLID
 
 7. **Implementar tests unitarios básicos**:
 
     - Empezar con Value Objects y validadores
     - **Esfuerzo**: 2-3 días
-    - **Referencia**: `ENGINEERING_PRACTICES.md` sección TDD
+    - **Referencia**: `documentation/best_practices.md` sección TDD
     - **Dónde**: `backend/src/tests/` (crear estructura)
 
 8. **Añadir endpoint GET all candidates**:
@@ -158,19 +158,19 @@
 
     -   Para creación de agregados complejos
     -   **Esfuerzo**: 1 día
-    -   **Referencia**: `ENGINEERING_PRACTICES.md` sección Patrones de Diseño
+    -   **Referencia**: `documentation/best_practices.md` sección Patrones de Diseño
 
 12. **Implementar Unit of Work Pattern**:
 
     -   Para transacciones complejas
     -   **Esfuerzo**: 2 días
-    -   **Referencia**: `ENGINEERING_PRACTICES.md` sección Patrones de Diseño
+    -   **Referencia**: `documentation/best_practices.md` sección Patrones de Diseño
 
 13. **Migrar a Domain Services**:
 
     -   Mover lógica de negocio compleja del Application Service
     -   **Esfuerzo**: 2-3 días
-    -   **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD
+    -   **Referencia**: `documentation/best_practices.md` sección DDD
 
 ### Funcionalidades nuevas (baja prioridad, alto esfuerzo)
 

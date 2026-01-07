@@ -41,14 +41,14 @@ class Candidate {
 
 **Riesgo**: Acoplamiento directo con Prisma en modelos de dominio (viola Clean Architecture estricta)
 
-**⚠️ Violaciones identificadas** (ver `ENGINEERING_PRACTICES.md`):
+**⚠️ Violaciones identificadas** (ver `documentation/best_practices.md`):
 
 -   Viola **Dependency Inversion Principle (DIP)**: Dominio depende de infraestructura
 -   Viola **Single Responsibility Principle (SRP)**: Modelos tienen dos responsabilidades (lógica de negocio + persistencia)
 -   Imposible testear sin base de datos
 -   Dificulta cambiar de ORM
 
-**Recomendación**: Migrar a Repository Pattern (ver `ENGINEERING_PRACTICES.md` sección DDD)
+**Recomendación**: Migrar a Repository Pattern (ver `documentation/best_practices.md` sección DDD)
 
 ### 2. Service Layer Pattern
 
@@ -66,7 +66,7 @@ export const addCandidate = async (candidateData: any) => {
 
 **Dónde**: `backend/src/application/services/*.ts`
 
-**⚠️ Mejoras necesarias** (ver `ENGINEERING_PRACTICES.md`):
+**⚠️ Mejoras necesarias** (ver `documentation/best_practices.md`):
 
 -   Debería usar inyección de dependencias
 -   Debería depender de abstracciones (repositorios) en lugar de modelos con persistencia
@@ -90,7 +90,7 @@ export const getCandidateById = async (req: Request, res: Response) => {
 
 -   `candidateRoutes.ts` no usa el controlador `addCandidateController`
 -   Llamada directa a servicio desde ruta (ver `candidateRoutes.ts:9`)
--   **Recomendación**: Usar controladores consistentemente (ver `ENGINEERING_PRACTICES.md`)
+-   **Recomendación**: Usar controladores consistentemente (ver `documentation/best_practices.md`)
 
 ### 4. Route Handler Pattern
 
@@ -136,7 +136,7 @@ export const validateCandidateData = (data: any) => {
 
 **Dónde**: `backend/src/application/validator.ts`
 
-**⚠️ Violaciones identificadas** (ver `ENGINEERING_PRACTICES.md`):
+**⚠️ Violaciones identificadas** (ver `documentation/best_practices.md`):
 
 -   Viola **Single Responsibility Principle (SRP)**: Valida campos individuales, colecciones y lógica condicional
 -   Viola **Open/Closed Principle (OCP)**: Validación hardcodeada, difícil de extender
@@ -289,7 +289,7 @@ graph TB
 
 ## Documentación de buenas prácticas
 
-**📋 Ver `ENGINEERING_PRACTICES.md`** para análisis detallado de:
+**📋 Ver `documentation/best_practices.md`** para análisis detallado de:
 
 -   Violaciones de principios SOLID (SRP, OCP, LSP, ISP, DIP)
 -   Violaciones de DDD (Active Record vs Repository, falta de Value Objects)
