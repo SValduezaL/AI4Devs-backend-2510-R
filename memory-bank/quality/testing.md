@@ -10,6 +10,10 @@
 
 **Coverage**: Desconocido (sin tests)
 
+**📋 Análisis TDD completo**: Ver `ENGINEERING_PRACTICES.md` sección "Test-Driven Development (TDD)"
+
+**Problema crítico identificado**: No se puede aplicar TDD correctamente porque los modelos de dominio están acoplados a Prisma. Ver `ENGINEERING_PRACTICES.md` sección DDD para solución (Repository Pattern).
+
 ## Configuración detectada
 
 ### Backend
@@ -57,12 +61,27 @@ module.exports = {
 
 ### Unit Tests
 
-**Qué testear**:
+**Qué testear** (priorizado según `ENGINEERING_PRACTICES.md`):
 
--   Validadores (`backend/src/application/validator.ts`)
--   Servicios (`backend/src/application/services/*.ts`)
--   Utilidades y helpers
--   Componentes React (lógica, no UI)
+1. **Value Objects** (cuando se implementen):
+
+    - Email, Phone, DateRange
+    - Fáciles de testear, alto impacto
+    - **Referencia**: `ENGINEERING_PRACTICES.md` sección TDD - Ejemplo: Test de Value Object
+
+2. **Validadores** (`backend/src/application/validator.ts`):
+
+    - Lógica crítica de validación
+    - Funciones puras, fáciles de testear
+
+3. **Servicios** (`backend/src/application/services/*.ts`):
+
+    - **⚠️ Problema actual**: Dependen de modelos con persistencia (difícil de mockear)
+    - **Solución**: Implementar Repository Pattern primero (ver `ENGINEERING_PRACTICES.md`)
+    - Con repositorios, se pueden mockear fácilmente
+
+4. Utilidades y helpers
+5. Componentes React (lógica, no UI)
 
 **Ejemplo** (validador):
 
@@ -91,6 +110,47 @@ describe("validateCandidateData", () => {
     });
 });
 ```
+
+**Ejemplo con Repository Pattern** (recomendado en `ENGINEERING_PRACTICES.md`):
+
+```typescript
+// candidateService.test.ts
+import { CandidateService } from "./CandidateService";
+import { ICandidateRepository } from "../../domain/repositories/ICandidateRepository";
+import { Candidate } from "../../domain/models/Candidate";
+
+describe("CandidateService", () => {
+    let mockRepository: jest.Mocked<ICandidateRepository>;
+    let service: CandidateService;
+
+    beforeEach(() => {
+        mockRepository = {
+            save: jest.fn(),
+            findById: jest.fn(),
+            findByEmail: jest.fn(),
+        };
+        service = new CandidateService(mockRepository);
+    });
+
+    it("should create candidate with valid data", async () => {
+        const candidateData = {
+            firstName: "John",
+            lastName: "Doe",
+            email: "john@example.com",
+        };
+
+        const savedCandidate = new Candidate({ ...candidateData, id: 1 });
+        mockRepository.save.mockResolvedValue(savedCandidate);
+
+        const result = await service.addCandidate(candidateData);
+
+        expect(mockRepository.save).toHaveBeenCalled();
+        expect(result.id).toBe(1);
+    });
+});
+```
+
+**Referencia**: Ver `ENGINEERING_PRACTICES.md` sección TDD para más ejemplos
 
 **Dónde**: `backend/src/tests/unit/` o `backend/src/__tests__/`
 
@@ -182,9 +242,26 @@ describe("Candidate Management", () => {
 
 ### Para Unit Tests
 
-**Prisma Client**: Mockear en tests unitarios
+**⚠️ Problema actual**: Los modelos de dominio usan Prisma directamente, lo que hace difícil mockear sin base de datos.
 
-**Ejemplo**:
+**✅ Solución recomendada** (ver `ENGINEERING_PRACTICES.md`):
+
+-   Implementar Repository Pattern
+-   Mockear interfaces de repositorios en lugar de Prisma
+-   Tests rápidos y determinísticos
+
+**Ejemplo con Repository Pattern** (recomendado):
+
+```typescript
+// Mock del repositorio (no de Prisma)
+const mockRepository: jest.Mocked<ICandidateRepository> = {
+    save: jest.fn(),
+    findById: jest.fn(),
+    findByEmail: jest.fn(),
+};
+```
+
+**Ejemplo antiguo** (no recomendado, requiere BD):
 
 ```typescript
 jest.mock("@prisma/client", () => ({
@@ -311,23 +388,45 @@ backend/src/tests/
 
 ## Quick wins para testing
 
-1. **Tests de validación** (1-2 horas):
+**📋 Ver `ENGINEERING_PRACTICES.md` sección TDD para estrategia completa**
+
+**Recomendación priorizada** (según `ENGINEERING_PRACTICES.md`):
+
+1. **Empezar con Value Objects** (cuando se implementen):
+
+    - Son fáciles de testear y alto impacto
+    - **Esfuerzo**: 1-2 horas
+    - **Referencia**: `ENGINEERING_PRACTICES.md` sección TDD
+
+2. **Tests de validación** (1-2 horas):
 
     - Validadores son funciones puras, fáciles de testear
     - Alto impacto, bajo esfuerzo
 
-2. **Tests de endpoints** (4-6 horas):
+3. **Implementar Repository Pattern primero** (2-3 días):
+
+    - **⚠️ CRÍTICO**: Sin esto, no se pueden testear servicios sin BD
+    - Habilitará testing real de servicios
+    - **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD
+
+4. **Tests de servicios** (después de Repository Pattern):
+
+    - Con repositorios mockeados
+    - **Esfuerzo**: 2-3 días
+
+5. **Tests de endpoints** (4-6 horas):
 
     - POST /candidates
     - GET /candidates/:id
     - POST /upload
 
-3. **Setup de test DB** (2 horas):
+6. **Setup de test DB** (2 horas):
 
     - Configurar Prisma con BD de test
     - Scripts de setup/teardown
+    - Solo necesario para tests de integración
 
-4. **Coverage básico** (1 hora):
+7. **Coverage básico** (1 hora):
     - Configurar Jest coverage
     - Añadir a CI
 

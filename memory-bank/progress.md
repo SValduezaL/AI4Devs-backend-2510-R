@@ -145,16 +145,29 @@
 
 ### Deuda técnica
 
-1. **Acoplamiento Domain → Prisma**:
+**📋 Análisis completo disponible en `ENGINEERING_PRACTICES.md`**
+
+1. **Acoplamiento Domain → Prisma** (CRÍTICO):
 
     - Modelos de dominio usan Prisma directamente
-    - Viola principio de inversión de dependencias
+    - Viola **Dependency Inversion Principle (DIP)**
+    - Viola **Single Responsibility Principle (SRP)**
     - **Impacto**: Difícil testear, cambiar ORM requiere modificar modelos
+    - **Solución recomendada**: Repository Pattern (ver `ENGINEERING_PRACTICES.md` sección DDD)
+    - **Esfuerzo estimado**: 2-3 días
 
 2. **Sin separación de concerns en validación**:
 
     - Validación mezclada con lógica de negocio
-    - **Mejora**: Usar librería de validación (Zod, Joi, class-validator)
+    - Viola **Single Responsibility Principle (SRP)**
+    - Viola **Open/Closed Principle (OCP)**: Validación hardcodeada
+    - Falta de Value Objects (Email, Phone, DateRange)
+    - **Mejora**:
+        - Crear Value Objects para validación en dominio
+        - Separar validadores por responsabilidad (FieldValidator, EducationValidator, etc.)
+        - Usar Strategy Pattern para validación configurable
+    - **Referencia**: Ver `ENGINEERING_PRACTICES.md` sección SOLID y DRY
+    - **Esfuerzo estimado**: 1-2 días
 
 3. **Manejo de errores inconsistente**:
 
@@ -185,8 +198,9 @@
 
 8. **TypeScript `any` types**:
 
-    - Uso de `any` en varios lugares
-    - **Mejora**: Tipos estrictos, DTOs
+    - Uso de `any` en varios lugares (candidateData, error handling, etc.)
+    - **Mejora**: Tipos estrictos, DTOs, interfaces para requests/responses
+    - **Esfuerzo estimado**: 3 horas
 
 9. **Sin paginación**:
 
@@ -199,73 +213,114 @@
 
 ## Lista de Quick wins (3-10)
 
+**📋 Recomendaciones priorizadas detalladas en `ENGINEERING_PRACTICES.md` sección "Resumen de Recomendaciones Prioritarias"**
+
 ### Prioridad Alta (hacer primero)
 
-1. **Corregir ruta de uploads**:
+1. **Introducir Repository Pattern** ⭐ **MAYOR IMPACTO**:
 
-    - Cambiar `../uploads/` a path absoluto o variable de entorno
-    - **Esfuerzo**: 15 min
-    - **Dónde**: `backend/src/application/services/fileUploadService.ts:6`
+    - Desacoplar modelos de Prisma
+    - Habilitar testing sin BD
+    - Cumplir DIP y SRP
+    - **Esfuerzo**: 2-3 días
+    - **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD y SOLID
 
-2. **Extraer configuración a variables de entorno**:
+2. **Corregir inconsistencia en rutas**:
+
+    - Usar controladores en lugar de llamar servicios directamente
+    - **Esfuerzo**: 1 hora
+    - **Dónde**: `backend/src/routes/candidateRoutes.ts:9`
+
+3. **Extraer configuración a variables de entorno**:
 
     - PORT, CORS_ORIGIN, UPLOAD_PATH
     - **Esfuerzo**: 30 min
     - **Dónde**: `backend/src/index.ts`
 
-3. **Unificar manejo de errores**:
+4. **Corregir ruta de uploads**:
+
+    - Cambiar `../uploads/` a path absoluto o variable de entorno
+    - **Esfuerzo**: 15 min
+    - **Dónde**: `backend/src/application/services/fileUploadService.ts:6`
+
+5. **Unificar manejo de errores**:
     - Middleware que siempre retorna JSON
     - **Esfuerzo**: 1 hora
     - **Dónde**: `backend/src/index.ts:56-60`
 
-### Prioridad Media
+### Prioridad Media (Mejora de calidad)
 
-4. **Añadir GET all candidates con paginación**:
+4. **Crear Value Objects**:
+
+    - Email, Phone, DateRange
+    - Validación encapsulada en dominio
+    - **Esfuerzo**: 1 día
+    - **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD
+
+5. **Separar validadores por responsabilidad**:
+
+    - FieldValidator, EducationValidator, etc.
+    - Cumplir SRP
+    - **Esfuerzo**: 1 día
+    - **Referencia**: `ENGINEERING_PRACTICES.md` sección SOLID
+
+6. **Implementar tests unitarios básicos**:
+
+    - Empezar con Value Objects y validadores
+    - **Esfuerzo**: 2-3 días
+    - **Referencia**: `ENGINEERING_PRACTICES.md` sección TDD
+
+7. **Añadir GET all candidates con paginación**:
 
     - Endpoint básico con limit/offset
     - **Esfuerzo**: 2 horas
     - **Dónde**: `backend/src/routes/candidateRoutes.ts`
 
-5. **Validar fechas (endDate >= startDate)**:
+8. **Validar fechas (endDate >= startDate)**:
 
     - En educación y experiencia
     - **Esfuerzo**: 1 hora
-    - **Dónde**: `backend/src/application/validator.ts`
+    - **Dónde**: `backend/src/application/validator.ts` (o mejor: DateRange Value Object)
 
-6. **Integrar Swagger UI**:
+9. **Integrar Swagger UI**:
 
     - Usar `swagger-jsdoc` y `swagger-ui-express`
     - **Esfuerzo**: 2 horas
     - **Dónde**: `backend/src/index.ts`
 
-7. **Crear `.env.example`**:
+10. **Crear `.env.example`**:
 
-    - Template con todas las variables necesarias (DB_NAME, DB_PORT, DB_USER, DB_PASSWORD, DATABASE_URL)
+    - Template con todas las variables necesarias (DB_NAME, DB_PORT, DB_USER, DB_PASSWORD, DATABASE_URL, PORT, CORS_ORIGIN, UPLOAD_PATH)
     - **Esfuerzo**: 15 min
     - **Dónde**: Raíz del proyecto
 
-8. **Corregir bugs de carga de `.env`**:
-    - Si se usa `path.resolve(__dirname, ...)`, cambiar a `process.cwd()`
-    - Corregir validación de variables vacías
-    - **Esfuerzo**: 30 min
-    - **Dónde**: `backend/src/index.ts` o donde se cargue dotenv
+### Prioridad Baja (Refactorización a largo plazo)
 
-### Prioridad Baja (nice to have)
+11. **Introducir Factory Pattern**:
 
-8. **Añadir tests básicos**:
+    -   Para creación de agregados complejos
+    -   **Esfuerzo**: 1 día
+    -   **Referencia**: `ENGINEERING_PRACTICES.md` sección Patrones de Diseño
 
-    - Tests de validación
-    - Tests de servicios
-    - **Esfuerzo**: 4 horas
-    - **Dónde**: `backend/src/tests/`
+12. **Implementar Unit of Work Pattern**:
 
-9. **Mejorar tipos TypeScript**:
+    -   Para transacciones complejas
+    -   **Esfuerzo**: 2 días
+    -   **Referencia**: `ENGINEERING_PRACTICES.md` sección Patrones de Diseño
 
-    - Eliminar `any`, crear interfaces
-    - **Esfuerzo**: 3 horas
-    - **Dónde**: Todo el backend
+13. **Migrar a Domain Services**:
 
-10. **Añadir logging estructurado**:
-    - Reemplazar `console.log`
-    - **Esfuerzo**: 2 horas
-    - **Dónde**: Todo el backend
+    -   Mover lógica de negocio compleja del Application Service
+    -   **Esfuerzo**: 2-3 días
+    -   **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD
+
+14. **Mejorar tipos TypeScript**:
+
+    -   Eliminar `any`, crear interfaces, DTOs
+    -   **Esfuerzo**: 3 horas
+    -   **Dónde**: Todo el backend
+
+15. **Añadir logging estructurado**:
+    -   Reemplazar `console.log` (Winston, Pino)
+    -   **Esfuerzo**: 2 horas
+    -   **Dónde**: Todo el backend

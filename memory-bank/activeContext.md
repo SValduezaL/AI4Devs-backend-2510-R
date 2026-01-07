@@ -8,6 +8,12 @@
 
 **Versión detectada**: 0.0.0.001 (archivo `VERSION`)
 
+**📋 Documento de Buenas Prácticas creado**: 2026-01-07
+
+-   **Archivo**: `ENGINEERING_PRACTICES.md`
+-   **Contenido**: Análisis completo de violaciones SOLID, DDD, TDD, DRY y recomendaciones priorizadas
+-   **Uso**: Referencia oficial para decisiones arquitectónicas futuras
+
 ## En qué estamos ahora
 
 ### Funcionalidades implementadas
@@ -75,91 +81,123 @@
 
 ## Next steps sugeridos (backlog inicial)
 
-### Quick wins (alta prioridad, bajo esfuerzo)
+**📋 Ver `ENGINEERING_PRACTICES.md` sección "Resumen de Recomendaciones Prioritarias" para análisis detallado**
 
-1. **Corregir inconsistencia en rutas**:
+### Prioridad Alta (Impacto inmediato) ⭐
+
+1. **Introducir Repository Pattern** ⭐ **MAYOR IMPACTO**:
+
+    - Desacoplar modelos de Prisma
+    - Habilitar testing sin BD
+    - Cumplir DIP y SRP
+    - **Esfuerzo**: 2-3 días
+    - **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD y SOLID
+
+2. **Corregir inconsistencia en rutas**:
 
     - `candidateRoutes.ts` llama directamente al servicio
-    - Debería usar `addCandidateController` o eliminar controlador duplicado
+    - Debería usar `addCandidateController`
+    - **Esfuerzo**: 1 hora
     - **Dónde**: `backend/src/routes/candidateRoutes.ts:9`
 
-2. **Mejorar manejo de errores**:
+3. **Extraer configuración a variables de entorno**:
 
-    - Middleware de errores genérico retorna texto plano
-    - Debería retornar JSON consistente
-    - **Dónde**: `backend/src/index.ts:56-60`
-
-3. **Configurar variables de entorno**:
-
-    - Extraer puerto, CORS origin, ruta de uploads a `.env` (en raíz del proyecto)
-    - Corregir bugs de carga de `.env` si se usa `path.resolve(__dirname, ...)`
+    - PORT, CORS_ORIGIN, UPLOAD_PATH
+    - **Esfuerzo**: 30 min
     - **Dónde**: `backend/src/index.ts`
 
-4. **Añadir endpoint GET all candidates**:
+4. **Unificar manejo de errores**:
+
+    - Middleware que siempre retorna JSON
+    - **Esfuerzo**: 1 hora
+    - **Dónde**: `backend/src/index.ts:56-60`
+
+### Prioridad Media (Mejora de calidad)
+
+5. **Crear Value Objects**:
+
+    - Email, Phone, DateRange
+    - Validación encapsulada en dominio
+    - **Esfuerzo**: 1 día
+    - **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD
+
+6. **Separar validadores por responsabilidad**:
+
+    - FieldValidator, EducationValidator, etc.
+    - Cumplir SRP
+    - **Esfuerzo**: 1 día
+    - **Referencia**: `ENGINEERING_PRACTICES.md` sección SOLID
+
+7. **Implementar tests unitarios básicos**:
+
+    - Empezar con Value Objects y validadores
+    - **Esfuerzo**: 2-3 días
+    - **Referencia**: `ENGINEERING_PRACTICES.md` sección TDD
+    - **Dónde**: `backend/src/tests/` (crear estructura)
+
+8. **Añadir endpoint GET all candidates**:
 
     - Con paginación básica
+    - **Esfuerzo**: 2 horas
     - **Dónde**: `backend/src/routes/candidateRoutes.ts`
 
-5. **Validar fechas**:
-    - `endDate` debe ser >= `startDate` en educación y experiencia
-    - **Dónde**: `backend/src/application/validator.ts`
-
-### Mejoras de arquitectura (media prioridad)
-
-6. **Separar lógica de persistencia de modelos**:
-
-    - Crear repositorios o usar Prisma directamente en servicios
-    - Reducir acoplamiento Domain → Prisma
-
-7. **Añadir tests unitarios**:
-
-    - Tests para validadores
-    - Tests para servicios
-    - **Dónde**: `backend/src/tests/` (carpeta existe pero vacía)
-
-8. **Documentación API completa**:
+9. **Documentación API completa**:
 
     - Swagger UI funcionando
     - Endpoints documentados
     - **Dónde**: `backend/api-spec.yaml` existe, integrar con Express
-
-9. **Mejorar estructura de frontend**:
-
-    - Separar lógica de servicios
-    - Añadir manejo de errores en llamadas API
-    - **Dónde**: `frontend/src/services/candidateService.js`
 
 10. **Añadir tipos TypeScript consistentes**:
     - Eliminar `any` types
     - Crear DTOs/interfaces para requests/responses
     - **Dónde**: Todo el backend
 
+### Prioridad Baja (Refactorización a largo plazo)
+
+11. **Introducir Factory Pattern**:
+
+    -   Para creación de agregados complejos
+    -   **Esfuerzo**: 1 día
+    -   **Referencia**: `ENGINEERING_PRACTICES.md` sección Patrones de Diseño
+
+12. **Implementar Unit of Work Pattern**:
+
+    -   Para transacciones complejas
+    -   **Esfuerzo**: 2 días
+    -   **Referencia**: `ENGINEERING_PRACTICES.md` sección Patrones de Diseño
+
+13. **Migrar a Domain Services**:
+
+    -   Mover lógica de negocio compleja del Application Service
+    -   **Esfuerzo**: 2-3 días
+    -   **Referencia**: `ENGINEERING_PRACTICES.md` sección DDD
+
 ### Funcionalidades nuevas (baja prioridad, alto esfuerzo)
 
-11. **Sistema de autenticación**:
+14. **Sistema de autenticación**:
 
     -   JWT o sesiones
     -   Middleware de auth
     -   Login/registro
 
-12. **CRUD completo de posiciones**:
+15. **CRUD completo de posiciones**:
 
     -   Endpoints API
     -   UI para crear/editar/listar posiciones
 
-13. **Sistema de aplicaciones**:
+16. **Sistema de aplicaciones**:
 
     -   Candidatos aplican a posiciones
     -   Seguimiento de estado
     -   UI de dashboard
 
-14. **Gestión de entrevistas**:
+17. **Gestión de entrevistas**:
 
     -   Crear entrevistas
     -   Asignar entrevistadores
     -   Registrar resultados
 
-15. **Notificaciones**:
+18. **Notificaciones**:
     -   Emails a candidatos
     -   Notificaciones a reclutadores
 

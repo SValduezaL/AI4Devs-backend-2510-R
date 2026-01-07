@@ -41,6 +41,15 @@ class Candidate {
 
 **Riesgo**: Acoplamiento directo con Prisma en modelos de dominio (viola Clean Architecture estricta)
 
+**⚠️ Violaciones identificadas** (ver `ENGINEERING_PRACTICES.md`):
+
+-   Viola **Dependency Inversion Principle (DIP)**: Dominio depende de infraestructura
+-   Viola **Single Responsibility Principle (SRP)**: Modelos tienen dos responsabilidades (lógica de negocio + persistencia)
+-   Imposible testear sin base de datos
+-   Dificulta cambiar de ORM
+
+**Recomendación**: Migrar a Repository Pattern (ver `ENGINEERING_PRACTICES.md` sección DDD)
+
 ### 2. Service Layer Pattern
 
 Servicios de aplicación coordinan lógica de negocio:
@@ -57,6 +66,12 @@ export const addCandidate = async (candidateData: any) => {
 
 **Dónde**: `backend/src/application/services/*.ts`
 
+**⚠️ Mejoras necesarias** (ver `ENGINEERING_PRACTICES.md`):
+
+-   Debería usar inyección de dependencias
+-   Debería depender de abstracciones (repositorios) en lugar de modelos con persistencia
+-   Lógica de negocio compleja debería estar en Domain Services, no en Application Services
+
 ### 3. Controller Pattern
 
 Controladores manejan HTTP request/response:
@@ -70,6 +85,12 @@ export const getCandidateById = async (req: Request, res: Response) => {
 ```
 
 **Dónde**: `backend/src/presentation/controllers/*.ts`
+
+**⚠️ Inconsistencia detectada**:
+
+-   `candidateRoutes.ts` no usa el controlador `addCandidateController`
+-   Llamada directa a servicio desde ruta (ver `candidateRoutes.ts:9`)
+-   **Recomendación**: Usar controladores consistentemente (ver `ENGINEERING_PRACTICES.md`)
 
 ### 4. Route Handler Pattern
 
@@ -114,6 +135,19 @@ export const validateCandidateData = (data: any) => {
 ```
 
 **Dónde**: `backend/src/application/validator.ts`
+
+**⚠️ Violaciones identificadas** (ver `ENGINEERING_PRACTICES.md`):
+
+-   Viola **Single Responsibility Principle (SRP)**: Valida campos individuales, colecciones y lógica condicional
+-   Viola **Open/Closed Principle (OCP)**: Validación hardcodeada, difícil de extender
+-   Validación mezclada (formato + lógica de negocio)
+-   Falta de Value Objects: validación debería estar en el dominio
+
+**Recomendación**:
+
+-   Separar validadores por responsabilidad (FieldValidator, EducationValidator, etc.)
+-   Crear Value Objects para validación en dominio (Email, Phone, DateRange)
+-   Usar Strategy Pattern para validación configurable
 
 ## Convenciones de carpetas y naming
 
@@ -252,3 +286,14 @@ graph TB
 -   No muestra el flujo completo de subida de archivos
 -   No muestra relaciones entre modelos de dominio
 -   Simplifica la capa de presentación (no muestra middleware)
+
+## Documentación de buenas prácticas
+
+**📋 Ver `ENGINEERING_PRACTICES.md`** para análisis detallado de:
+
+-   Violaciones de principios SOLID (SRP, OCP, LSP, ISP, DIP)
+-   Violaciones de DDD (Active Record vs Repository, falta de Value Objects)
+-   Estado de TDD (sin tests implementados)
+-   Duplicaciones (DRY)
+-   Patrones recomendados (Repository, Factory, Strategy, Unit of Work)
+-   Recomendaciones priorizadas con estimaciones de esfuerzo
