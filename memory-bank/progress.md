@@ -136,11 +136,12 @@
     - **Riesgo**: Depende del working directory
     - **Solución**: Usar path absoluto o variable de entorno
 
-6. **Carga de variables de entorno**:
-    - **Bug 1**: Si se usa `path.resolve(__dirname, '../../.env')`, en desarrollo con `ts-node-dev`, `__dirname` apunta a `backend/src`, haciendo que busque en `backend/.env` en lugar de la raíz donde está el archivo real.
-    - **Solución**: Usar `process.cwd()` o `path.resolve(process.cwd(), '.env')` para cargar desde la raíz del proyecto.
-    - **Bug 2**: Validación de variables requeridas con checks falsy (`!process.env.VAR`) rechaza strings vacíos (`VAR=`) aunque la variable exista en `.env`.
-    - **Solución**: Usar `process.env.VAR === undefined` o validar explícitamente strings vacíos según el caso.
+6. **Carga de variables de entorno**: ✅ **RESUELTO**
+    - **Solución implementada**: Un solo `.env` en la raíz del proyecto
+    - **Código**: `backend/src/index.ts` usa `dotenv.config({ path: path.resolve(__dirname, '../../.env') })`
+    - **Prisma CLI**: Usa `dotenv-cli` en scripts de `package.json` para cargar `.env` de la raíz
+    - **Scripts disponibles**: `prisma:generate`, `prisma:migrate`, `prisma:studio`, `prisma:seed`
+    - **Documentación**: Ver `backend/README-ENV.md`
 
 ### Deuda técnica
 

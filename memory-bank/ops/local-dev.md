@@ -226,11 +226,31 @@ UPLOAD_PATH=./uploads
 
 **Nota**: Actualmente algunas variables están hardcodeadas. Ver `backend/src/index.ts`.
 
-**⚠️ Bugs conocidos con `.env`**:
+**✅ Solución implementada para `.env`**:
 
-1. **Bug de path en desarrollo**: Si el código usa `path.resolve(__dirname, '../../.env')`, en desarrollo con `ts-node-dev`, `__dirname` apunta a `backend/src`, haciendo que busque en `backend/.env` en lugar de la raíz. **Solución**: Usar `process.cwd()` o `path.resolve(process.cwd(), '.env')`.
+1. **Un solo `.env` en la raíz**: Todas las variables están en un solo archivo en la raíz del proyecto (no en `backend/`).
 
-2. **Bug de validación de variables vacías**: Si una validación usa checks falsy (`!process.env.VAR`), rechazará strings vacíos (`VAR=`) aunque la variable exista. **Solución**: Usar `process.env.VAR === undefined` o `!process.env.VAR || process.env.VAR.trim() === ''` según el caso.
+2. **Código de aplicación**: `backend/src/index.ts` carga el `.env` de la raíz usando:
+
+    ```typescript
+    dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+    ```
+
+    Funciona tanto en desarrollo (`backend/src`) como en producción (`backend/dist`).
+
+3. **Comandos de Prisma**: Usan `dotenv-cli` para cargar el `.env` de la raíz:
+
+    - `npm run prisma:generate` → usa `dotenv -e ../.env`
+    - `npm run prisma:migrate` → usa `dotenv -e ../.env`
+    - `npm run prisma:studio` → usa `dotenv -e ../.env`
+
+4. **Ventajas**:
+    - Una sola fuente de verdad
+    - Compartido con `docker-compose.yml`
+    - Sin duplicación de variables
+    - Más fácil de mantener
+
+**Ver**: `backend/README-ENV.md` para documentación completa.
 
 ### Frontend
 

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
+import path from 'path';
 import candidateRoutes from './routes/candidateRoutes';
 import { uploadFile } from './application/services/fileUploadService';
 import cors from 'cors';
@@ -15,7 +16,11 @@ declare global {
   }
 }
 
-dotenv.config();
+// Cargar .env desde la raíz del proyecto (no desde backend/)
+// __dirname en desarrollo: backend/src, en producción: backend/dist
+// Por lo tanto, subimos dos niveles para llegar a la raíz
+const envPath = path.resolve(__dirname, '../../.env');
+dotenv.config({ path: envPath });
 const prisma = new PrismaClient();
 
 export const app = express();
