@@ -1,28 +1,199 @@
-# Ignore in all directories
-**/.DS_Store
-#**/.env
-**/.env.example
-**/node_modules
-**/prompts_master.md
+# ============================================
+# Dependencies
+# ============================================
+node_modules/
+.pnp
+.pnp.js
+jspm_packages/
 
-# other dependencies
-**/.pnp
-**.pnp.js
+# ============================================
+# Testing
+# ============================================
+coverage/
+*.lcov
+.nyc_output
+.coverage/
 
-# testing
-**/coverage
+# ============================================
+# Production builds
+# ============================================
+build/
+dist/
+*.tsbuildinfo
 
-# production
-**/build
-**/dist
+# ============================================
+# Environment variables
+# ============================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
 
-# logs
+# Prisma environment files
+prisma/.env
+
+# ============================================
+# Logs
+# ============================================
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# IDE
-.idea
-.vscode
+# ============================================
+# Runtime data
+# ============================================
+pids/
+*.pid
+*.seed
+*.pid.lock
 
-# .env
+# ============================================
+# Cache directories
+# ============================================
+.cache/
+.parcel-cache/
+.npm/
+.eslintcache
+.stylelintcache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# ============================================
+# Optional npm cache
+# ============================================
+.npm
+
+# ============================================
+# Optional REPL history
+# ============================================
+.node_repl_history
+
+# ============================================
+# Output of 'npm pack'
+# ============================================
+*.tgz
+
+# ============================================
+# Yarn
+# ============================================
+.yarn-integrity
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ============================================
+# TypeScript
+# ============================================
+*.tsbuildinfo
+
+# ============================================
+# Uploads (user-uploaded files)
+# ============================================
+uploads/
+**/uploads/
+
+# ============================================
+# OS generated files
+# ============================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ============================================
+# IDE - VSCode
+# ============================================
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# ============================================
+# IDE - IntelliJ IDEA / WebStorm
+# ============================================
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ============================================
+# IDE - Sublime Text
+# ============================================
+*.sublime-project
+*.sublime-workspace
+
+# ============================================
+# IDE - Vim
+# ============================================
+*.swp
+*.swo
+*~
+
+# ============================================
+# IDE - Emacs
+# ============================================
+*~
+\#*\#
+.\#*
+
+# ============================================
+# Temporary files
+# ============================================
+*.tmp
+*.temp
+*.bak
+
+# ============================================
+# Local development
+# ============================================
+.local/
+
+# ============================================
+# Misc
+# ============================================
+*.pem
+.prompts_master.md
+
+# ============================================
+# Framework specific (for future use)
+# ============================================
+# Next.js
+.next/
+out/
+
+# Nuxt.js
+.nuxt/
+dist/
+
+# Gatsby
+.cache/
+public/
+
+# ============================================
+# Docker (optional - uncomment if needed)
+# ============================================
+# docker-compose.override.yml
