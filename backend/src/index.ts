@@ -44,6 +44,10 @@ app.use(cors({
 // Import and use candidateRoutes
 app.use('/candidates', candidateRoutes);
 
+// Import and use positionRoutes
+import positionRoutes from './routes/positionRoutes';
+app.use('/positions', positionRoutes);
+
 // Route for file uploads
 app.post('/upload', uploadFile);
 

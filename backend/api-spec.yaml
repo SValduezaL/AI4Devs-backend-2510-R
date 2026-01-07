@@ -185,4 +185,200 @@ paths:
           description: Invalid file type, only PDF and DOCX are allowed
         '500':
           description: Error during the file upload process
+  /positions/{id}/candidates:
+    get:
+      summary: Get candidates in process for a position
+      description: Returns all candidates that are in process for a specific position, including their full name, current interview step, and average score.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Position ID
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: List of candidates in process
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    candidateId:
+                      type: integer
+                      description: ID of the candidate
+                    fullName:
+                      type: string
+                      description: Full name of the candidate (firstName + lastName)
+                    currentInterviewStep:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: ID of the current interview step
+                        name:
+                          type: string
+                          description: Name of the current interview step
+                    averageScore:
+                      type: number
+                      nullable: true
+                      description: Average score from interviews (null if no interviews with scores)
+                    applicationId:
+                      type: integer
+                      description: ID of the application
+              example:
+                - candidateId: 1
+                  fullName: "Juan Pérez"
+                  currentInterviewStep:
+                    id: 2
+                    name: "Entrevista Técnica"
+                  averageScore: 7.5
+                  applicationId: 1
+        '400':
+          description: Invalid position ID format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid position ID format"
+        '404':
+          description: Position not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Position not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+  /candidates/{id}/stage:
+    put:
+      summary: Update candidate stage in process
+      description: Updates the current interview step for a candidate in a specific position application.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Candidate ID
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - positionId
+                - currentInterviewStep
+              properties:
+                positionId:
+                  type: integer
+                  description: ID of the position
+                  minimum: 1
+                currentInterviewStep:
+                  type: integer
+                  description: ID of the new interview step
+                  minimum: 1
+            example:
+              positionId: 1
+              currentInterviewStep: 2
+      responses:
+        '200':
+          description: Application updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Application ID
+                  positionId:
+                    type: integer
+                  candidateId:
+                    type: integer
+                  currentInterviewStep:
+                    type: integer
+                  applicationDate:
+                    type: string
+                    format: date-time
+                  candidate:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      firstName:
+                        type: string
+                      lastName:
+                        type: string
+                  interviewStep:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+              example:
+                id: 1
+                positionId: 1
+                candidateId: 1
+                currentInterviewStep: 2
+                applicationDate: "2024-01-15T00:00:00.000Z"
+                candidate:
+                  id: 1
+                  firstName: "Juan"
+                  lastName: "Pérez"
+                interviewStep:
+                  id: 2
+                  name: "Entrevista Técnica"
+        '400':
+          description: Invalid request body or candidate ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid request body. positionId and currentInterviewStep are required and must be positive numbers"
+        '404':
+          description: Application not found or invalid interview step
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      - "Application not found"
+                      - "Invalid interview step for this position"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal Server Error"
 

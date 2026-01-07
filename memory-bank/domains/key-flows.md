@@ -118,7 +118,132 @@ Obtener información completa de un candidato por su ID.
 
 ---
 
-## Flujo 3: Aplicar a Posición (No implementado)
+## Flujo 3: Visualizar Candidatos en Proceso (Implementado)
+
+### Descripción
+
+Reclutador visualiza todos los candidatos que están en proceso para una posición específica en una interfaz tipo Kanban.
+
+### Pasos
+
+1. **Solicitar candidatos en proceso**
+
+    - Frontend/API: GET `/positions/:id/candidates`
+    - Backend: `positionRoutes.ts` → `getCandidatesByPositionController()`
+
+2. **Validación de ID**
+
+    - Parsear `req.params.id` a número entero positivo
+    - Si no es válido: 400 "Invalid position ID format"
+
+3. **Obtener aplicaciones**
+
+    - `applicationService.getCandidatesByPosition(positionId)`
+    - Query Prisma con includes:
+        - `candidate` (firstName, lastName)
+        - `interviewStep` (id, name)
+        - `interviews` (score)
+
+4. **Calcular puntuación media**
+
+    - Filtrar entrevistas con `score !== null`
+    - Calcular promedio: `sum(scores) / count(scores)`
+    - Si no hay scores: retornar `null`
+
+5. **Formatear respuesta**
+
+    - Concatenar `firstName + " " + lastName` → `fullName`
+    - Incluir `currentInterviewStep` con id y name
+    - Incluir `averageScore` (number | null)
+    - Incluir `applicationId` y `candidateId`
+
+6. **Respuesta**
+    - Si éxito: 200 con array de candidatos
+    - Si posición no existe: 404 "Position not found"
+    - Si error: 500 "Internal Server Error"
+
+### Archivos involucrados
+
+-   `backend/src/routes/positionRoutes.ts`
+-   `backend/src/presentation/controllers/positionController.ts`
+-   `backend/src/application/services/applicationService.ts:getCandidatesByPosition()`
+
+### Casos de error
+
+-   **ID inválido**: 400 "Invalid position ID format"
+-   **Posición no existe**: 404 "Position not found"
+-   **Sin aplicaciones**: 200 con array vacío `[]`
+-   **Sin entrevistas**: `averageScore = null`
+
+---
+
+## Flujo 4: Actualizar Etapa del Proceso (Implementado)
+
+### Descripción
+
+Reclutador mueve un candidato a una nueva etapa del proceso de selección en una interfaz tipo Kanban.
+
+### Pasos
+
+1. **Solicitar actualización**
+
+    - Frontend/API: PUT `/candidates/:id/stage`
+    - Body: `{ positionId, currentInterviewStep }`
+    - Backend: `candidateRoutes.ts` → `updateCandidateStageController()`
+
+2. **Validación de entrada**
+
+    - Validar `candidateId` es entero positivo
+    - Validar `positionId` en body es entero positivo
+    - Validar `currentInterviewStep` en body es entero positivo
+    - Si alguna validación falla: 400 con mensaje específico
+
+3. **Buscar aplicación**
+
+    - `applicationService.updateCandidateStage(candidateId, positionId, newStepId)`
+    - Buscar Application por `candidateId` y `positionId`
+    - Si no existe: Error "Application not found" → 404
+
+4. **Validar posición**
+
+    - Obtener Position por `positionId`
+    - Si no existe: Error "Position not found" → 404
+
+5. **Validar paso de entrevista**
+
+    - Obtener InterviewStep por `newStepId`
+    - Si no existe: Error "Interview step not found" → 404
+    - Validar que `step.interviewFlowId === position.interviewFlowId`
+    - Si no coincide: Error "Invalid interview step for this position" → 404
+
+6. **Actualizar aplicación**
+
+    - Actualizar `currentInterviewStep` en Application
+    - Incluir relaciones: candidate, interviewStep, position
+
+7. **Respuesta**
+    - Si éxito: 200 con Application actualizada
+    - Si error de validación: 400/404 según tipo de error
+    - Si error inesperado: 500 "Internal Server Error"
+
+### Archivos involucrados
+
+-   `backend/src/routes/candidateRoutes.ts`
+-   `backend/src/presentation/controllers/candidateController.ts:updateCandidateStageController()`
+-   `backend/src/application/services/applicationService.ts:updateCandidateStage()`
+
+### Casos de error
+
+-   **ID inválido**: 400 "Invalid candidate ID format"
+-   **Body inválido**: 400 "Invalid request body..."
+-   **Aplicación no existe**: 404 "Application not found"
+-   **Posición no existe**: 404 "Position not found"
+-   **Paso inválido**: 404 "Invalid interview step for this position"
+-   **Error Prisma P2025**: 404 (manejado automáticamente)
+
+---
+
+## Flujo 5: Aplicar a Posición (No implementado)
 
 ### Descripción
 
@@ -150,11 +275,11 @@ Un candidato aplica a una posición de trabajo.
 
 ### Estado
 
-**No implementado**. Modelos existen pero sin endpoints.
+**No implementado**. Modelos existen pero sin endpoints para crear aplicaciones.
 
 ---
 
-## Flujo 4: Realizar Entrevista (No implementado)
+## Flujo 6: Realizar Entrevista (No implementado)
 
 ### Descripción
 
@@ -192,7 +317,7 @@ Un empleado realiza una entrevista a un candidato en una aplicación.
 
 ---
 
-## Flujo 5: Gestionar Posiciones (No implementado)
+## Flujo 7: Gestionar Posiciones (No implementado)
 
 ### Descripción
 
@@ -261,6 +386,8 @@ flowchart TD
 -   ✅ Añadir candidato (completo)
 -   ✅ Obtener candidato (completo)
 -   ✅ Subir archivo (completo)
+-   ✅ Visualizar candidatos en proceso (completo) - GET `/positions/:id/candidates`
+-   ✅ Actualizar etapa del proceso (completo) - PUT `/candidates/:id/stage`
 
 ### Parcialmente implementados
 

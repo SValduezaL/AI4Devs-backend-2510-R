@@ -242,6 +242,7 @@ index.ts
 -   **Nuevos endpoints**: Añadir ruta en `backend/src/routes/`, controlador en `backend/src/presentation/controllers/`, servicio en `backend/src/application/services/`
 -   **Nueva validación**: Añadir función en `backend/src/application/validator.ts`
 -   **Nuevo modelo**: Crear en `backend/src/domain/models/`, añadir al schema Prisma
+-   **Nuevos tests**: Añadir en `backend/src/tests/unit/` siguiendo estructura TDD
 
 ## Diagrama de arquitectura
 

@@ -46,7 +46,8 @@
 
 -   `typescript`: Compilador TS
 -   `ts-node`, `ts-node-dev`: Ejecutar TS sin compilar
--   `jest`, `ts-jest`: Testing (configurado pero sin tests)
+-   `jest`, `ts-jest`: Testing (configurado, 54 tests implementados ✅)
+-   `js-yaml`, `@types/js-yaml`: Para validación de especificación OpenAPI en tests
 -   `@types/*`: Type definitions
 -   `eslint`, `prettier`: Linting y formatting
 -   `prisma`: CLI de Prisma
@@ -199,7 +200,7 @@ npm start
 npm start          # Ejecuta dist/index.js (requiere build)
 npm run dev        # Desarrollo con ts-node-dev (hot reload)
 npm run build      # Compila TypeScript a dist/
-npm test           # Ejecuta Jest (sin tests configurados)
+npm test           # Ejecuta Jest (54 tests unitarios implementados)
 npm run prisma:generate  # Genera Prisma Client
 npm run start:prod # Build + start
 ```

@@ -22,43 +22,72 @@
 
     - ✅ POST `/candidates` - Crear candidato
     - ✅ GET `/candidates/:id` - Obtener candidato por ID
+    - ✅ PUT `/candidates/:id/stage` - Actualizar etapa del proceso
     - ✅ Validación de datos de entrada
-    - ✅ Manejo de errores (email duplicado, validación)
+    - ✅ Manejo de errores (email duplicado, validación, errores Prisma)
 
-2. **Subida de archivos**:
+2. **API de Posiciones**:
+
+    - ✅ GET `/positions/:id/candidates` - Obtener candidatos en proceso para una posición
+    - ✅ Incluye cálculo de puntuación media de entrevistas
+    - ✅ Información formateada para visualización Kanban
+
+3. **Subida de archivos**:
 
     - ✅ POST `/upload` - Subir CV (PDF/DOCX)
     - ✅ Validación de tipo y tamaño (10MB)
     - ✅ Almacenamiento en disco
 
-3. **Frontend básico**:
+4. **Servicios de Aplicaciones**:
+
+    - ✅ `getCandidatesByPosition()` - Obtiene candidatos con información agregada
+    - ✅ `updateCandidateStage()` - Actualiza etapa del proceso con validaciones
+
+5. **Tests Unitarios TDD**:
+
+    - ✅ 54 tests unitarios implementados y pasando
+    - ✅ Tests para servicios (`applicationService.test.ts` - 18 tests)
+    - ✅ Tests para controladores (`positionController.test.ts` - 10 tests, `candidateController.test.ts` - 14 tests)
+    - ✅ Tests de validación de API spec (`apiSpec.test.ts` - 8 tests)
+    - ✅ Cobertura completa de casos edge y validaciones
+
+6. **Frontend básico**:
 
     - ✅ Dashboard de reclutador
     - ✅ Formulario de candidato (componente presente)
     - ✅ Upload de archivos (componente presente)
 
-4. **Base de datos**:
+7. **Base de datos**:
+
     - ✅ Schema completo con todas las entidades
     - ✅ Migraciones Prisma
     - ✅ Seed script disponible
 
-### Funcionalidades modeladas pero no implementadas
+8. **Documentación API**:
+    - ✅ `api-spec.yaml` actualizado con nuevos endpoints
+    - ✅ Tests de validación de especificación OpenAPI
+
+### Funcionalidades parcialmente implementadas
 
 1. **Gestión de posiciones**:
 
-    - Modelo `Position` existe
-    - No hay endpoints API
-    - No hay UI
+    - ✅ Modelo `Position` existe
+    - ✅ Endpoint GET `/positions/:id/candidates` implementado
+    - ❌ CRUD completo de posiciones pendiente
+    - ❌ No hay UI
 
 2. **Proceso de aplicación**:
 
-    - Modelo `Application` conecta candidatos con posiciones
-    - No hay endpoints para crear/gestionar aplicaciones
+    - ✅ Modelo `Application` conecta candidatos con posiciones
+    - ✅ Endpoint PUT `/candidates/:id/stage` para actualizar etapa
+    - ❌ Endpoints para crear/gestionar aplicaciones pendientes
+
+### Funcionalidades modeladas pero no implementadas
 
 3. **Entrevistas**:
 
     - Modelos `Interview`, `InterviewStep`, `InterviewFlow`, `InterviewType` existen
-    - No hay endpoints ni UI
+    - No hay endpoints CRUD ni UI
 
 4. **Gestión de empresas**:
 
@@ -128,12 +157,12 @@
     - **Esfuerzo**: 1 día
     - **Referencia**: `documentation/best_practices.md` sección SOLID
 
-7. **Implementar tests unitarios básicos**:
+7. **Tests unitarios básicos**:
 
-    - Empezar con Value Objects y validadores
-    - **Esfuerzo**: 2-3 días
+    - ✅ Tests unitarios implementados para nuevos endpoints (54 tests pasando)
+    - ⚠️ Tests para Value Objects y validadores pendientes (cuando se implementen)
     - **Referencia**: `documentation/best_practices.md` sección TDD
-    - **Dónde**: `backend/src/tests/` (crear estructura)
+    - **Dónde**: `backend/src/tests/unit/` (estructura creada)
 
 8. **Añadir endpoint GET all candidates**:
 
@@ -200,6 +229,33 @@
 18. **Notificaciones**:
     -   Emails a candidatos
     -   Notificaciones a reclutadores
+
+## Cambios recientes (2026-01-07)
+
+### US-CU1: Endpoints Kanban Candidatos - COMPLETADA ✅
+
+**Implementación completa con TDD**:
+
+-   ✅ Endpoints GET `/positions/:id/candidates` y PUT `/candidates/:id/stage` implementados
+-   ✅ 54 tests unitarios TDD pasando (100% de casos de prueba del plan)
+-   ✅ Documentación API actualizada en `api-spec.yaml`
+-   ✅ Validaciones robustas y manejo de errores mejorado (P2025 → 404)
+-   ✅ Cálculo de puntuación media implementado correctamente
+-   ✅ Validación de flujo de entrevistas implementada
+
+**Archivos nuevos**:
+
+-   `backend/src/application/services/applicationService.ts`
+-   `backend/src/presentation/controllers/positionController.ts`
+-   `backend/src/routes/positionRoutes.ts`
+-   `backend/src/tests/unit/applicationService.test.ts` (18 tests)
+-   `backend/src/tests/unit/positionController.test.ts` (10 tests)
+-   `backend/src/tests/unit/candidateController.test.ts` (14 tests)
+-   `backend/src/tests/unit/apiSpec.test.ts` (8 tests)
+-   `memory-bank/user_stories.md`
+-   `memory-bank/Tickets_US-CU1.md`
+
+**Ver detalles completos**: `memory-bank/progress.md` sección "Cambios recientes"
 
 ## Incertidumbres marcadas
 
