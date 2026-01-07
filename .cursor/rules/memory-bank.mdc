@@ -1,0 +1,134 @@
+---
+description: "Memory Bank mandatory workflow"
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Mandatory Memory Bank Workflow
+
+## Obligatorio: Leer Memory Bank antes de cada tarea
+
+Antes de comenzar CUALQUIER tarea, debes leer estos archivos en orden:
+
+1. `memory-bank/projectbrief.md` - Entender qué es el proyecto y su alcance
+2. `memory-bank/productContext.md` - Entender el contexto del producto y flujos
+3. `memory-bank/systemPatterns.md` - Entender arquitectura y patrones
+4. `memory-bank/techContext.md` - Entender stack tecnológico y setup
+5. `memory-bank/activeContext.md` - Entender estado actual y próximos pasos
+6. `memory-bank/progress.md` - Entender qué funciona y qué falta
+
+## Cuándo actualizar el Memory Bank
+
+Actualiza el Memory Bank en estos casos:
+
+-   **Después de implementar cambios significativos**: Nuevas funcionalidades, cambios arquitectónicos, nuevos endpoints
+-   **Cuando descubres nuevos patrones**: Si encuentras convenciones o patrones no documentados
+-   **Cuando corriges suposiciones**: Si algo en el Memory Bank era incorrecto
+-   **Cuando el usuario lo solicita explícitamente**: "update memory bank", "actualiza documentación"
+-   **Al añadir nuevas dependencias**: Actualizar `techContext.md`
+-   **Al cambiar flujos**: Actualizar `domains/key-flows.md` y `productContext.md`
+-   **Al resolver deuda técnica**: Actualizar `progress.md`
+
+## Disciplina de output
+
+### No inventar información
+
+-   **Si algo no se puede inferir del código**: Marca como `UNKNOWN` o `PENDIENTE DE CONFIRMACIÓN`
+-   **Si hay incertidumbre**: Crea una lista "Preguntas al humano" en `activeContext.md`
+-   **Si encuentras código que contradice la documentación**: Actualiza la documentación
+
+### Mantener archivos actuales
+
+-   **`activeContext.md`**: Debe reflejar el estado actual del proyecto
+-   **`progress.md`**: Debe reflejar qué funciona y qué falta HOY
+-   **`techContext.md`**: Debe reflejar las versiones y dependencias actuales
+
+## Estructura de actualización
+
+Al actualizar, sigue esta estructura:
+
+1. **Lee el archivo relevante** del Memory Bank
+2. **Identifica qué cambió** en el código
+3. **Actualiza la sección correspondiente**
+4. **Marca incertidumbres** con `UNKNOWN` o `PENDIENTE`
+5. **Añade referencias** a archivos de código cuando sea relevante
+
+## Archivos a actualizar por tipo de cambio
+
+### Nuevo endpoint API
+
+-   `memory-bank/interfaces/api.md` - Documentar endpoint
+-   `memory-bank/domains/key-flows.md` - Añadir flujo si aplica
+-   `memory-bank/progress.md` - Marcar como implementado
+
+### Nueva funcionalidad
+
+-   `memory-bank/productContext.md` - Actualizar "What: Cómo debería funcionar"
+-   `memory-bank/domains/key-flows.md` - Añadir flujo
+-   `memory-bank/activeContext.md` - Actualizar "En qué estamos ahora"
+
+### Cambio arquitectónico
+
+-   `memory-bank/systemPatterns.md` - Actualizar patrones
+-   `memory-bank/architecture/overview.md` - Actualizar diagramas si aplica
+
+### Nueva dependencia
+
+-   `memory-bank/techContext.md` - Añadir a "Dependencias clave"
+-   `memory-bank/progress.md` - Actualizar si resuelve deuda técnica
+
+### Resolver TODO/FIXME
+
+-   `memory-bank/progress.md` - Eliminar de "Qué falta"
+-   `memory-bank/activeContext.md` - Actualizar "Next steps" si aplica
+
+## Ejemplos de actualización
+
+### Ejemplo 1: Añadir nuevo endpoint
+
+```markdown
+# En memory-bank/interfaces/api.md
+
+## 4. Actualizar Candidato
+
+**PUT** `/candidates/:id`
+[Documentación del endpoint...]
+```
+
+Y en `memory-bank/progress.md`:
+
+```markdown
+✅ **Endpoints operativos**:
+
+-   ...
+-   `PUT /candidates/:id` - Actualiza candidato
+```
+
+### Ejemplo 2: Resolver deuda técnica
+
+```markdown
+# En memory-bank/progress.md
+
+## Deuda técnica resuelta
+
+1. ✅ **CORS configurable**: Ahora usa variable de entorno `CORS_ORIGIN`
+    - **Dónde**: `backend/src/index.ts:34`
+```
+
+## Preguntas frecuentes
+
+**P: ¿Debo leer TODO el Memory Bank cada vez?**
+R: Sí, al menos los 6 archivos core. Son documentos cortos y te ahorran tiempo.
+
+**P: ¿Qué pasa si el Memory Bank está desactualizado?**
+R: Actualízalo. Es parte de tu responsabilidad mantenerlo.
+
+**P: ¿Puedo ignorar el Memory Bank si tengo prisa?**
+R: No. Leer el Memory Bank te ahorra tiempo al evitar errores y malentendidos.
+
+**P: ¿Cómo sé qué archivo actualizar?**
+R: Usa la tabla de mapeo arriba, o actualiza todos los que sean relevantes.
+
+## Recordatorio final
+
+El Memory Bank es tu **fuente de verdad** sobre el proyecto. Mantenerlo actualizado es tan importante como escribir código. Un Memory Bank desactualizado es peor que no tenerlo.

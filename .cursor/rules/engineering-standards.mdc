@@ -1,0 +1,320 @@
+---
+description: "Engineering standards and conventions for the project"
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Engineering Standards
+
+## Convenciones del repositorio
+
+### Estructura de carpetas
+
+**Backend** (`backend/src/`):
+
+-   `domain/models/` - Modelos de dominio (PascalCase: `Candidate.ts`)
+-   `application/services/` - Servicios (camelCase: `candidateService.ts`)
+-   `application/validator.ts` - Validadores
+-   `presentation/controllers/` - Controladores (camelCase: `candidateController.ts`)
+-   `routes/` - Rutas (camelCase: `candidateRoutes.ts`)
+
+**Frontend** (`frontend/src/`):
+
+-   `components/` - Componentes React (PascalCase: `AddCandidateForm.js`)
+-   `services/` - Servicios API (camelCase: `candidateService.js`)
+
+### Naming conventions
+
+-   **Archivos TypeScript/JavaScript**:
+    -   camelCase para servicios, rutas, controladores
+    -   PascalCase para modelos, componentes, clases
+-   **Clases**: PascalCase (`Candidate`, `Education`)
+-   **Funciones/variables**: camelCase (`addCandidate`, `candidateData`)
+-   **Constantes**: UPPER_SNAKE_CASE (no detectado pero recomendado)
+
+### Código style
+
+-   **Indentación**: 2 espacios
+-   **Quotes**: Preferir consistentes (single o double, elegir uno)
+-   **Semicolons**: Sí (detectado en código)
+-   **TypeScript**: Evitar `any`, usar tipos específicos
+
+## Linting y Formatting
+
+### Backend
+
+**ESLint + Prettier** configurados (ver `memory-bank/quality/linting-format.md`)
+
+**Scripts** (cuando estén configurados):
+
+```bash
+npm run lint        # Verificar linting
+npm run lint:fix    # Arreglar automáticamente
+npm run format      # Formatear con Prettier
+```
+
+### Frontend
+
+**ESLint** configurado via Create React App
+
+**Prettier**: Recomendado pero no configurado
+
+## Testing
+
+### Estado actual
+
+**Tests**: No implementados (estructura presente)
+
+### Convenciones (cuando se implementen)
+
+-   **Archivos de test**: `*.test.ts` o `*.spec.ts`
+-   **Describe blocks**: Nombre del módulo/función
+-   **It blocks**: "should [comportamiento esperado]"
+-   **Coverage objetivo**: 70% inicial, 80-90% a largo plazo
+
+### Dónde testear
+
+-   `backend/src/tests/unit/` - Tests unitarios
+-   `backend/src/tests/integration/` - Tests de integración
+-   `cypress/` o `e2e/` - Tests E2E (futuro)
+
+## Commits
+
+### Convención (no detectada, recomendada)
+
+**Formato**: `<tipo>(<scope>): <descripción>`
+
+**Tipos**:
+
+-   `feat`: Nueva funcionalidad
+-   `fix`: Corrección de bug
+-   `docs`: Documentación
+-   `style`: Formato (sin cambios de código)
+-   `refactor`: Refactorización
+-   `test`: Tests
+-   `chore`: Mantenimiento
+
+**Ejemplos**:
+
+```
+feat(candidates): add PUT endpoint to update candidate
+fix(validator): validate endDate >= startDate
+docs(memory-bank): update API documentation
+```
+
+## Arquitectura
+
+### Clean Architecture
+
+**Respetar capas**:
+
+-   **Domain**: No debe depender de infraestructura (violación actual: Prisma en modelos)
+-   **Application**: Lógica de aplicación, coordina dominio
+-   **Presentation**: HTTP, request/response
+-   **Infrastructure**: Prisma, file system, etc.
+
+**Dónde añadir código**:
+
+-   Nuevo modelo: `backend/src/domain/models/`
+-   Nuevo servicio: `backend/src/application/services/`
+-   Nuevo controlador: `backend/src/presentation/controllers/`
+-   Nueva ruta: `backend/src/routes/`
+
+### Patrones a seguir
+
+1. **Service Layer**: Lógica de negocio en servicios, no en controladores
+2. **Validator Pattern**: Validación separada en `validator.ts`
+3. **Controller Pattern**: Controladores solo manejan HTTP
+4. **Active Record**: Modelos contienen persistencia (actual, considerar cambiar)
+
+## Base de datos
+
+### Prisma
+
+**Schema**: `backend/prisma/schema.prisma`
+
+**Migraciones**:
+
+-   Crear: `npx prisma migrate dev --name nombre`
+-   Aplicar: `npx prisma migrate dev`
+-   Generar client: `npx prisma generate`
+
+**Convenciones**:
+
+-   Modelos en PascalCase
+-   Campos en camelCase
+-   Relaciones explícitas con `@relation`
+
+### Cambios de schema
+
+1. Modificar `schema.prisma`
+2. Crear migración: `npx prisma migrate dev`
+3. Generar client: `npx prisma generate` (automático con migrate)
+4. Actualizar modelos de dominio si aplica
+
+## API
+
+### Endpoints
+
+**Convención REST**:
+
+-   GET: Obtener recursos
+-   POST: Crear recursos
+-   PUT: Actualizar recursos (completo)
+-   PATCH: Actualizar recursos (parcial)
+-   DELETE: Eliminar recursos
+
+**URLs**: Plural, kebab-case
+
+-   `/candidates` ✅
+-   `/candidates/:id` ✅
+-   `/work-experiences` (si se implementa)
+
+### Respuestas
+
+**Éxito**:
+
+-   200: OK (GET, PUT, DELETE)
+-   201: Created (POST)
+-   204: No Content (DELETE sin body)
+
+**Error**:
+
+-   400: Bad Request (validación, datos inválidos)
+-   404: Not Found
+-   500: Internal Server Error
+
+**Formato**: JSON consistente
+
+```json
+{
+    "message": "Error description",
+    "error": "Details"
+}
+```
+
+### Documentación
+
+**OpenAPI**: `backend/api-spec.yaml`
+
+**Actualizar**: Cuando se añaden/modifican endpoints
+
+## Seguridad
+
+### Validación
+
+-   **Siempre validar entrada**: Usar validadores
+-   **Sanitizar**: Prisma protege contra SQL injection, pero validar tipos
+-   **Límites**: Respetar límites de tamaño (archivos, campos)
+
+### Variables de entorno
+
+-   **Nunca commitear**: `.env` en `.gitignore`
+-   **Usar `.env.example`**: Template sin valores reales
+-   **Secrets**: No hardcodear en código
+
+### CORS
+
+-   **Configurar correctamente**: No hardcodear `localhost:3000`
+-   **Producción**: Permitir solo orígenes conocidos
+
+## "Don't touch" zones
+
+### No modificar sin consultar
+
+-   **Schema Prisma**: Cambios pueden romper migraciones existentes
+-   **Estructura de carpetas**: A menos que sea refactorización acordada
+-   **Configuración de build**: `tsconfig.json`, `package.json` scripts principales
+
+### Zonas sensibles
+
+-   **Manejo de errores global**: `backend/src/index.ts:56-60`
+-   **Configuración de Prisma Client**: `backend/src/index.ts:19`
+-   **CORS**: `backend/src/index.ts:34-37`
+
+## Test-first o no
+
+**Estado actual**: No test-first
+
+**Recomendación futura**:
+
+-   Tests unitarios para validadores (fácil, alto impacto)
+-   Tests de integración para endpoints críticos
+-   E2E para flujos principales
+
+## Cómo proponer cambios
+
+### Proceso
+
+1. **Plan**: Documentar qué y por qué
+2. **Código**: Implementar siguiendo convenciones
+3. **Tests**: Añadir tests si aplica
+4. **Documentación**: Actualizar Memory Bank si aplica
+5. **Review**: Si hay equipo, solicitar review
+
+### Checklist antes de commit
+
+-   [ ] Código sigue convenciones
+-   [ ] Linting pasa (`npm run lint`)
+-   [ ] Tests pasan (si existen)
+-   [ ] Memory Bank actualizado (si aplica)
+-   [ ] Sin `console.log` de debug
+-   [ ] Sin código comentado innecesario
+-   [ ] Variables de entorno no hardcodeadas
+
+## Dependencias
+
+### Añadir nuevas
+
+1. **Evaluar necesidad**: ¿Realmente necesaria?
+2. **Verificar compatibilidad**: Versiones con stack actual
+3. **Instalar**: `npm install <package>`
+4. **Actualizar**: `memory-bank/techContext.md`
+5. **Documentar**: Para qué se usa
+
+### Actualizar existentes
+
+1. **Verificar breaking changes**: Changelog
+2. **Probar**: Ejecutar tests (si existen)
+3. **Actualizar**: `package.json` y `package-lock.json`
+4. **Documentar**: Cambios en `techContext.md` si significativo
+
+## Performance
+
+### Consideraciones
+
+-   **Queries N+1**: Usar `include` en Prisma para relaciones
+-   **Paginación**: Implementar en listados
+-   **Caché**: Considerar para queries frecuentes (futuro)
+-   **Límites**: Respetar límites de tamaño de archivos
+
+## Observabilidad
+
+### Logging
+
+**Actual**: `console.log` básico
+
+**Recomendado**: Logging estructurado (Pino, Winston)
+
+**No hacer**: `console.log` en producción sin estructura
+
+### Errores
+
+**Siempre**: Manejar errores, no dejar sin catch
+
+**Formato**: JSON consistente en respuestas de error
+
+**Tracking**: Considerar Sentry o similar (futuro)
+
+## Resumen de reglas críticas
+
+1. ✅ Leer Memory Bank antes de trabajar
+2. ✅ Seguir estructura de carpetas
+3. ✅ Validar siempre entrada
+4. ✅ No hardcodear configuración
+5. ✅ Actualizar Memory Bank después de cambios significativos
+6. ✅ Usar tipos TypeScript, evitar `any`
+7. ✅ Documentar endpoints en `api-spec.yaml`
+8. ✅ Respetar convenciones de naming
+9. ✅ Manejar errores apropiadamente
+10. ✅ No commitear secrets o `.env`
